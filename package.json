@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/msklvsk/dawgjs#readme",
   "devDependencies": {
+    "@types/node": "12.12.6",
     "tslint": "^4.3.1",
     "tslint-eslint-rules": "^3.2.3",
     "tslint-microsoft-contrib": "^4.0.0",

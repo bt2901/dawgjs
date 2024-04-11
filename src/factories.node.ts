@@ -17,6 +17,6 @@ export function readStringCompletionDawgSync(filename: string): CompletionDawg<s
     return readStringCompletionDawg(readFileSync(filename).buffer);
 }
 ////////////////////////////////////////////////////////////////////////////////
-export function readStringMapDawgSync(filename: string, deserializer: ValueDeserializer<T>): MapDawg<string, T> {
+export function readStringMapDawgSync<T>(filename: string, deserializer: ValueDeserializer<T>): MapDawg<string, T> {
     return readStringMapDawg(readFileSync(filename).buffer, deserializer, 1, true);
 }
