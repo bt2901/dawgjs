@@ -23,6 +23,14 @@ export class ByteCompletionDawg extends ByteDawg {
 
     yield* completer(this.dictionary, this.guide, index);
   }
+  completionsBytesArray(prefix: Iterable<number>): number[][] {
+  
+    let index = this.dictionary.followBytes(prefix);
+    if (index === null) {
+      return [];
+    }
+    return completerArray(this.dictionary, this.guide, index);
+  }
 }
 
 
@@ -75,4 +83,54 @@ function* completer(dic: Dictionary, guide: Guide, index: number) {
       }
     }
   }
+}
+
+
+//------------------------------------------------------------------------------
+function completerArray(dic: Dictionary, guide: Guide, index: number) {
+  let ret = new Array();
+  let completion = new Array();
+  let indexStack = [index];
+  while (indexStack.length) {
+    // find terminal
+    while (!dic.hasValue(index)) {
+      let label = guide.child(index);
+      index = dic.followByte(label, index);
+      if (index === null) {
+          return ret;
+      }
+      completion.push(label);
+      indexStack.push(index);
+    }
+    ret.push([...completion]);
+    let childLabel = guide.child(index);
+    if (childLabel) {
+      if ((index = dic.followByte(childLabel, index)) === null) {
+        return ret;
+      }
+      completion.push(childLabel);
+      indexStack.push(index);
+    }
+    else {
+      while (true) {
+        // move up to previous
+        indexStack.pop();
+        if (!indexStack.length) {
+            return ret;
+        }
+        completion.pop();
+        let siblingLabel = guide.sibling(index);
+        index = indexStack[indexStack.length - 1];
+        if (siblingLabel) {
+            if ((index = dic.followByte(siblingLabel, index)) === null) {
+                return ret;
+            }
+            completion.push(siblingLabel);
+            indexStack.push(index);
+            break;
+        }
+      }
+    }
+  }
+  return ret;
 }

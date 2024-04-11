@@ -21,4 +21,18 @@ export class ByteMapDawg {
       yield b64decodeFromArray(completed);
     }
   }
+  
+  getBytesArray(key: Iterable<number>): Uint8Array[] {
+    
+    let ret = new Array();
+    let completions = this.dawg.completionsBytesArray([...key, this.payloadSeparator]);
+    for (let i = 0; i < completions.length; ++i) {
+      let completed = completions[i];
+      if (this.binasciiWorkaround) {
+        completed = completed.slice(0, -1);
+      }
+      ret.push(b64decodeFromArray(completed));
+    }
+    return ret;
+  }
 }

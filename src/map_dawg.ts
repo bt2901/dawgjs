@@ -23,4 +23,8 @@ export class MapDawg<K, V> {
       yield this.valueDeserializer(value);
     }
   }
+  
+  getArray(key: K): V[] {
+    return this.dawg.getBytesArray(this.keyEncoder(key)).map(x => this.valueDeserializer(x));
+  }
 }
