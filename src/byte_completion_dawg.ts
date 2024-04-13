@@ -6,7 +6,7 @@ import { ByteDawg } from './byte_dawg';
 
 export class ByteCompletionDawg extends ByteDawg {
   constructor(
-      dictionary: Dictionary,
+      public dictionary: Dictionary,
       protected guide: Guide) {
     super(dictionary);
   }

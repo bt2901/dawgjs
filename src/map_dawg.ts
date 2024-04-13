@@ -9,7 +9,7 @@ export interface ValueDeserializer<V> {
 
 export class MapDawg<K, V> {
   constructor(
-    protected dawg: ByteMapDawg,
+    public dawg: ByteMapDawg,
     protected keyEncoder: (key: K) => Iterable<number>,
     protected valueDeserializer: ValueDeserializer<V>) {
   }

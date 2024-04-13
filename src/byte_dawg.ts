@@ -3,7 +3,7 @@ import { Dictionary } from './dictionary';
 
 
 export class ByteDawg {
-  constructor(protected dictionary: Dictionary) {
+  constructor(public dictionary: Dictionary) {
   }
 
   hasBytes(value: Iterable<number>) {

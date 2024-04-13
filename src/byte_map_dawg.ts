@@ -4,7 +4,7 @@ import { b64decodeFromArray } from './codec';
 
 
 export class ByteMapDawg {
-  constructor(protected dawg: ByteCompletionDawg,
+  constructor(public dawg: ByteCompletionDawg,
               protected payloadSeparator = 1,
               protected binasciiWorkaround = false) {  // see https://github.com/kmike/DAWG/issues/21
   }
