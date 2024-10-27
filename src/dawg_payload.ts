@@ -40,13 +40,10 @@ export class DawgPayload {
                 throw new Error('DAWG is corrupted!');
         }
         while (prefixes.length) {
-            console.log(["prefixes", prefixes]);
             const currentPrefix = prefixes.pop();
-            console.log(currentPrefix);
             if (!currentPrefix) continue;
-        
+
             [prefix, encodedPrefix, len, index] = currentPrefix;
-            console.log([len, str.length, prefix, encodedPrefix, index]);
 
             // Done: at the end of the input string
             if (len === str.length) {
@@ -58,7 +55,6 @@ export class DawgPayload {
                 }
                 if (this.format === 'words' || this.format === 'probs') {
                     // read the payload separated by \x01
-                    console.log(["end of", prefix, encodedPrefix, index]);
                     const newIndex = myDict.followByte(1, index);
                     if (newIndex === undefined || newIndex === -1) {
                         continue;
@@ -66,11 +62,8 @@ export class DawgPayload {
                     index = newIndex;
                 }
                 let deserializer = (this.format === 'words')? this.deserializerWord : this.deserializerProbs;
-                // console.log(["try", this.dawgjs_map!.dawg!.dawg!.completionsBytesArray(encodedPrefix.concat([1]))]);
-                // results.push([prefix, [...completer(myDict, myGuide, index)] ]);
                 const data = this.dawgjs_map!.dawg!.dawg!.completionsBytesArray(encodedPrefix.concat([1]));
                 const decodedArr: any[] = [];
-                console.log(data.length);
                 data.forEach(d => {
                     let decoded = b64decodeFromArray(d.slice(0, -1));
                     decodedArr.push(deserializer(decoded));
@@ -84,7 +77,6 @@ export class DawgPayload {
             if (replaces && currentChar in replaces) {
                 code = encodeUtf8(replaces[currentChar]!);
                 cur = myDict.followBytes(code, index);
-                console.log(JSON.stringify([currentChar, "->", replaces[currentChar], code, cur]))
                 if (cur !== undefined || cur !== -1) {
                     prefixes.push([prefix + replaces[currentChar], encodedPrefix.concat(code), len + 1, cur]);
                 }
@@ -93,13 +85,10 @@ export class DawgPayload {
             // Follow base path
             code = encodeUtf8(currentChar);
             cur = myDict.followBytes(code, index);
-            console.log(JSON.stringify([currentChar, code, cur]))
             if (cur !== undefined || cur !== -1) {
                 prefixes.push([prefix + currentChar, encodedPrefix.concat(code), len + 1, cur]);
             }
         }
-        console.log(["PREFIXES:", JSON.stringify(prefixes)]);
-        console.log(["RESULTS:", JSON.stringify(results)]);
         return results;
     }
 
@@ -134,25 +123,6 @@ export class DawgPayload {
         }
 
         return;
-    }
-    private getAllReplaces(str: string, replaces?: string[][]): string[] {
-        const allReplaces: string[] = [];
-
-        if (!replaces || !replaces.length) {
-            return allReplaces;
-        }
-
-        for (let i = 0; i < str.length; i++) {
-            const char = str[i];
-
-            replaces.forEach(([from, to]) => {
-                if (char === from) {
-                    allReplaces.push(`${str.slice(0, i)}${to}${str.slice(i + 1)}`);
-                }
-            });
-        }
-
-        return allReplaces;
     }
     private deserializerWord(bytes: Uint8Array): [number, number] {
         let view = new DataView(bytes.buffer);
