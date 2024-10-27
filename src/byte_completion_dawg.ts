@@ -7,7 +7,7 @@ import { ByteDawg } from './byte_dawg';
 export class ByteCompletionDawg extends ByteDawg {
   constructor(
       public dictionary: Dictionary,
-      protected guide: Guide) {
+      public guide: Guide) {
     super(dictionary);
   }
 
@@ -35,7 +35,7 @@ export class ByteCompletionDawg extends ByteDawg {
 
 
 //------------------------------------------------------------------------------
-function* completer(dic: Dictionary, guide: Guide, index: number) {
+export function* completer(dic: Dictionary, guide: Guide, index: number) {
   let completion = new Array<number>();
   let indexStack = [index];
   while (indexStack.length) {
@@ -87,7 +87,7 @@ function* completer(dic: Dictionary, guide: Guide, index: number) {
 
 
 //------------------------------------------------------------------------------
-function completerArray(dic: Dictionary, guide: Guide, index: number) {
+export function completerArray(dic: Dictionary, guide: Guide, index: number) {
   let ret = new Array();
   let completion = new Array();
   let indexStack = [index];
